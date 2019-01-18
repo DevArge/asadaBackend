@@ -83,9 +83,8 @@ class ReciboController extends Controller{
         if (!$recibo) {
             return response()->json(['ok'=> false, 'message' => 'El recibo con el ID: ' . $id . ' no existe'], 403);        
         }
-        $recibo->devolverDeudas($recibo);
-        $idLectura = $recibo->idLectura;
-        $lectura = Lectura::find($idLectura);
+        Recibo::devolverDeudas($recibo);
+        $lectura = Lectura::find($recibo->idLectura);
         $recibo->delete();
         $lectura->delete();
         return response()->json(['ok' => true, 'message' => 'Recibo eliminado correctamente'], 201);

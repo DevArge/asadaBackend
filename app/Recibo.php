@@ -88,7 +88,7 @@ class Recibo extends Model{
         }
     }
 
-    public function devolverDeudas($recibo){
+    public static function devolverDeudas($recibo){
         return DB::transaction(function ()use($recibo) {
             $deudas = DeudaRecibo::getDeudaRecibo($recibo->id);
             $reparacion = 0;

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Lectura;
 use App\Medidor;
+use App\Recibo;
 use DB;
 
 class LecturaController extends Controller{
@@ -78,6 +79,9 @@ class LecturaController extends Controller{
         if ($mensaje != 'actualizar lectura' && $mensaje != 'nueva lectura') {
             return response()->json(['ok' => false, 'message' =>  $mensaje], 400);           
         }
+        $recibo = Recibo::where('idLectura', $id)->first();
+        Recibo::devolverDeudas($recibo);
+        $recibo->delete();
         $lectura->delete();
         return response()->json(['ok' => true, 'message' => 'Lectura eliminada correctamente'], 201);
     }
