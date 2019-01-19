@@ -9,6 +9,10 @@ use DB;
 
 class ReparacionController extends Controller{
 
+    public function __construct(){
+        $this->middleware('jwt.auth');
+    }
+
     public function postReparacion(Request $request, $id){
         $medidor = Medidor::find($id);
         if (!$medidor) {

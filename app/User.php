@@ -6,9 +6,10 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 use DB;
 
-class User extends Authenticatable{
+class User extends Authenticatable implements JWTSubject{
     use Notifiable;
     use SoftDeletes;
 
@@ -19,8 +20,14 @@ class User extends Authenticatable{
     protected $hidden = [
         'password', 'remember_token',
     ];
-
     protected $dates = ['deleted_at'];
+
+    public function getJWTIdentifier() {
+        return $this->getKey();
+    }
+    public function getJWTCustomClaims() {
+        return [];
+    }
 
     public static function obtenerUsers($desde, $cantidad, $columna, $orden){
         $desde = $desde ? $desde : 0;

@@ -10,6 +10,10 @@ use DB;
 
 class LecturaController extends Controller{
 
+    public function __construct(){
+        $this->middleware('jwt.auth');
+    }
+
     public function getLecturas(Request $r){
         $total = DB::table('medidores')->where('estado', 'ACTIVO')->count();
         $lecturas = Lectura::obtenerLecturas($r->desde, $r->cantidad, $r->columna, $r->orden, $r->todos, $r->periodo);

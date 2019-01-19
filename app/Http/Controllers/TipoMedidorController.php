@@ -8,6 +8,10 @@ use App\TipoDeMedidor;
 
 
 class TipoMedidorController extends Controller{
+
+    public function __construct(){
+        $this->middleware('jwt.auth');
+    }
     
     public function getTipodeMedidores(){
         $tipos = TipoDeMedidor::all();

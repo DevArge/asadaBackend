@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 //=========================================================================
 //=============================== Login ===================================
 //=========================================================================
+Route::post('login',                   'LoginController@login');
+Route::get('renuevatoken',            'LoginController@renuevaToken');
 
 //=========================================================================
 //=============================== User ====================================
@@ -14,7 +16,6 @@ Route::get('usuarios/buscar/{termino?}', 'UserController@buscarUsers');
 Route::post('usuario',                   'UserController@postUser');
 Route::put('usuario/{id}',               'UserController@putUser');
 Route::delete('usuario/{id}',            'UserController@deleteUser');
-
 //=========================================================================
 //============================== Abonado ==================================
 //=========================================================================

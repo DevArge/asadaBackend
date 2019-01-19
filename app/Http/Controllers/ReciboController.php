@@ -9,6 +9,10 @@ use App\Medidor;
 use DB;
 
 class ReciboController extends Controller{
+
+    public function __construct(){
+        $this->middleware('jwt.auth', ['except' => ['getRecibosMedidor']]);
+    } 
     
     public function getRecibos(Request $r){
         $formatoValido = Lectura::validarFormatoPeriodo($r->periodo);

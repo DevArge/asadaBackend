@@ -9,6 +9,10 @@ use DB;
 
 class AbonadoController extends Controller{
 
+    public function __construct(){
+        $this->middleware('jwt.auth');
+    }
+
     public function getAbonados(Request $r){
         $total = DB::table('abonados')->where('deleted_at', null)->count();
         $abonados = Abonado::obtenerAbonados($r->desde, $r->cantidad, $r->columna, $r->orden);

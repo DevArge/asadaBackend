@@ -11,6 +11,10 @@ use Hash;
 
 class UserController extends Controller{
 
+    public function __construct(){
+        $this->middleware('jwt.auth');
+    }
+
     public function getUsers(Request $r){
         $total = DB::table('users')->where('deleted_at', null)->count();
         $usuarios = User::obtenerUsers($r->desde, $r->cantidad, $r->columna, $r->orden);

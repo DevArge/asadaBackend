@@ -12,6 +12,10 @@ use DB;
 
 class MedidorController extends Controller{
 
+    public function __construct(){
+        $this->middleware('jwt.auth');
+    }
+    
     public function getMedidores(Request $r){
         $total = $r->todos ? DB::table('medidores') : DB::table('medidores')->where('estado', 'ACTIVO');
         $medidores = Medidor::obtenerMedidores($r->desde, $r->cantidad, $r->columna, $r->orden, $r->todos);
