@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMorososTable extends Migration
+class CreateHistorialsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CreateMorososTable extends Migration
      */
     public function up()
     {
-        Schema::create('morosos', function (Blueprint $table) {
+        Schema::create('historiales', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('idAbonado')->unsigned();
-            $table->integer('idRecibo')->unsigned();
-            $table->string('estado');
-            $table->foreign('idAbonado')->references('id')->on('abonados');
-            $table->foreign('idRecibo')->references('id')->on('recibos');
+            $table->integer('idUsuario')->unsigned();
+            $table->string('actividad');
+            $table->string('detalle');
+            $table->foreign('idUsuario')->references('id')->on('users');
             $table->timestamps();
         });
     }
@@ -31,6 +30,6 @@ class CreateMorososTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('morosos');
+        Schema::dropIfExists('historiales');
     }
 }

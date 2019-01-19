@@ -34,5 +34,36 @@ class DeudaDeMedidor extends Model{
         ->where('estado', 'PENDIENTE')
         ->first();
     }
+
+    public static function getDeudas($id){
+        return DB::table('deuda_de_medidores')
+        ->where('idMedidor', $id);
+    }
+
+    public static function paginar($desde, $cantidad, $columna, $orden, $id){
+        $desde = $desde ? $desde : 0;
+        $cantidad = $cantidad ? $cantidad : 10;
+        $columna = $columna ? $columna : 'id';
+        $orden = $orden ? $orden : 'asc';
+        return DeudaDeMedidor::getDeudas($id)
+                    ->skip($desde)
+                    ->take($cantidad)
+                    ->orderBy($columna, $orden);
+    }
+
+    public static function validarMultiplo($deuda, $deudaReq){
+        if ($deudaReq === 0) {
+            return true;
+        }
+        $abono = $deuda->costoTotal / $deuda->plazo;
+        $suma = 0;
+        while ($suma <= $deuda->costoTotal) {
+            if ($suma == $deudaReq) {
+                return true;
+            }
+            $suma = $suma + $abono;
+        }
+        return false;
+    }
     
 }

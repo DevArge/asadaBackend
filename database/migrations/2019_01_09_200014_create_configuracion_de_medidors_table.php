@@ -21,7 +21,6 @@ class CreateConfiguracionDeMedidorsTable extends Migration
             $table->integer('treintaYunoAsecenta');
             $table->integer('masDeSecenta');
             $table->integer('impuestoReactivacion');
-            $table->integer('impuestoRetraso');
             $table->timestamps();
         });
     }

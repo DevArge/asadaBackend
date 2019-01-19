@@ -38,8 +38,7 @@ class DatabaseSeeder extends Seeder
             'onceAtreinta'         => 215,
             'treintaYunoAsecenta'  => 230,
             'masDeSecenta'         => 245,
-            'impuestoReactivacion' => 1000,
-            'impuestoRetraso'      => 0,
+            'impuestoReactivacion' => 1000
           ]);
 
 

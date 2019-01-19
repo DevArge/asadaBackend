@@ -5,8 +5,7 @@ use Illuminate\Http\Request;
 //=============================== Login ===================================
 //=========================================================================
 Route::post('login',                   'LoginController@login');
-Route::get('renuevatoken',            'LoginController@renuevaToken');
-
+Route::get('renuevatoken',             'LoginController@renuevaToken');
 //=========================================================================
 //=============================== User ====================================
 //=========================================================================
@@ -16,6 +15,12 @@ Route::get('usuarios/buscar/{termino?}', 'UserController@buscarUsers');
 Route::post('usuario',                   'UserController@postUser');
 Route::put('usuario/{id}',               'UserController@putUser');
 Route::delete('usuario/{id}',            'UserController@deleteUser');
+//=========================================================================
+//========================= Historial User ================================
+//=========================================================================
+Route::get('historial',                'HistorialController@getHistoriales');
+Route::post('historial',               'HistorialController@postHistorial');
+
 //=========================================================================
 //============================== Abonado ==================================
 //=========================================================================
@@ -41,9 +46,11 @@ Route::put('medidor/{id}',                'MedidorController@putMedidor');
 Route::delete('medidor/{id}',             'MedidorController@deleteMedidor');
 Route::post('medidor/habilitar/{id}',     'MedidorController@habilitarMedidor');
 //=========================================================================
-//======================= Reparacion Medidor ==============================
+//========================= Deudas Medidor ================================
 //=========================================================================
-Route::post('medidor/reparacion/{id}', 'ReparacionController@postReparacion');
+Route::post('medidor/deuda/{id}',          'DeudaController@postReparacion');
+Route::get('medidor/deudas/{id}',          'DeudaController@getDeudas');
+Route::put('medidor/deuda/{id}',           'DeudaController@putDeuda');
 //=========================================================================
 //============================== Lectura ==================================
 //=========================================================================
@@ -61,5 +68,23 @@ Route::get('recibos/medidor/{id}',            'ReciboController@getRecibosMedido
 Route::get('recibos/buscar/{tipo}/{termino?}','ReciboController@buscarRecibos');
 Route::put('recibo/{id}',                     'ReciboController@putRecibo');
 Route::delete('recibo/{id}',                  'ReciboController@deleteRecibo');
+//=========================================================================
+//============================== ASADA ====================================
+//=========================================================================
+Route::get('asada',                          'AsadaController@getAsada');
+Route::put('asada/{id}',                     'AsadaController@putAsada');
+//=========================================================================
+//=================== Configuracion de Medidores ==========================
+//=========================================================================
+Route::get('configuracion-medidores',      'ConfMedidorController@getConfMedidores');
+Route::put('configuracion-medidores/{id}', 'ConfMedidorController@putConfMedidores');
+//=========================================================================
+//===================== Configuracion de Recibos ==========================
+//=========================================================================
+Route::get('configuracion-recibos',      'ConfReciboController@getConfRecibos');
+Route::put('configuracion-recibos/{id}', 'ConfReciboController@putConfRecibos');
+
+
+
 
 
