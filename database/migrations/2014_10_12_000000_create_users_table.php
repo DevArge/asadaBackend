@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->foreign('idAsada')->references('id')->on('asadas');
             $table->rememberToken();
             $table->timestamp('email_verified_at')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

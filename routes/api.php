@@ -5,6 +5,15 @@ use Illuminate\Http\Request;
 //=============================== Login ===================================
 //=========================================================================
 
+//=========================================================================
+//=============================== User ====================================
+//=========================================================================
+Route::get('usuarios',                   'UserController@getUsers');
+Route::get('usuario/{id}',               'UserController@getUser');
+Route::get('usuarios/buscar/{termino?}', 'UserController@buscarUsers');
+Route::post('usuario',                   'UserController@postUser');
+Route::put('usuario/{id}',               'UserController@putUser');
+Route::delete('usuario/{id}',            'UserController@deleteUser');
 
 //=========================================================================
 //============================== Abonado ==================================

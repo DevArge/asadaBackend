@@ -3,53 +3,61 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\UserRequest;
+use App\Http\Requests\UserUpdateRequest;
+use App\User;
+use DB;
+use Hash;
 
 class UserController extends Controller{
 
     public function getUsers(Request $r){
         $total = DB::table('users')->where('deleted_at', null)->count();
-        $abonados = User::obtenerAbonados($r->desde, $r->cantidad, $r->columna, $r->orden);
-        return response()->json(['ok'=> true, 'abonados' => $abonados, 'total' => $total], 200);
+        $usuarios = User::obtenerUsers($r->desde, $r->cantidad, $r->columna, $r->orden);
+        return response()->json(['ok'=> true, 'usuarios' => $usuarios, 'total' => $total], 200);
     }
 
     public function getUser(Request $request, $id){
-        $abonado = Abonado::find($id);
-        if (!$abonado) {
-            return response()->json(['ok'=> false, 'message' => 'El abonado con el ID: ' . $id . ' no existe'], 403);        
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['ok'=> false, 'message' => 'El usuario con el ID: ' . $id . ' no existe'], 403);        
         }
-        return response()->json(['ok'=> true, 'abonado' => $abonado], 200);
+        return response()->json(['ok'=> true, 'usuario' => $user], 200);
     }
 
     public function buscarUsers(Request $r, $termino = ''){
-        $abonados = Abonado::paginarAbonados($termino, $r->desde, $r->cantidad, $r->columna, $r->orden);
-        $total = Abonado::buscarAbonado($termino)->count();
-        return response()->json(['ok'=> true, 'abonados' => $abonados, 'total' => $total], 200);
+        $usuarios = User::paginarUsuarios($termino, $r->desde, $r->cantidad, $r->columna, $r->orden);
+        $total = User::buscarUsuario($termino)->count();
+        return response()->json(['ok'=> true, 'usuarios' => $usuarios, 'total' => $total], 200);
     }
 
-    public function postUser(AbonadoRequest $request){
-        $abonado = new Abonado();
-        $abonado->fill($request->all());
-        $abonado->save();
-        return response()->json(['ok' => true, 'abonado' => $abonado], 201);
+    public function postUser(UserRequest $request){
+        $usuario = new User();
+        $usuario->fill($request->all());
+        $usuario->password = Hash::make($request->password);
+        $usuario->idAsada = DB::table('asadas')->where('id', '>=', 1)->value('id');
+        $usuario->save();
+        return response()->json(['ok' => true, 'usuario' => $usuario], 201);
     }
 
-    public function putUser(AbonadoRequest $request, $id){
-        $abonado = Abonado::find($id);
-        if (!$abonado) {
-            return response()->json(['ok'=> false, 'message' => 'El abonado con el ID: ' . $id . ' no existe'], 403);        
+    public function putUser(UserUpdateRequest $request, $id){
+        $usuario = User::find($id);
+        if (!$usuario) {
+            return response()->json(['ok'=> false, 'message' => 'El usuario con el ID: ' . $id . ' no existe'], 403);        
         }
-        $abonado->fill($request->all());
-        $abonado->save();
-        return response()->json(['ok' => true, 'message' => 'Abonado actualizado correctamente'], 201);
+        $usuario->fill($request->all());
+        $usuario->password = Hash::make($request->password);
+        $usuario->save();
+        return response()->json(['ok' => true, 'message' => 'Usuario actualizado correctamente'], 201);
     }
 
     public function deleteUser($id){
-        $abonado = Abonado::find($id);
-        if (!$abonado) {
-            return response()->json(['ok'=> false, 'message' => 'El abonado con el ID: ' . $id . ' no existe'], 403);        
+        $usuario = User::find($id);
+        if (!$usuario) {
+            return response()->json(['ok'=> false, 'message' => 'El usuario con el ID: ' . $id . ' no existe'], 403);        
         }
-        $abonado->delete();
-        return response()->json(['ok' => true, 'message' => 'Abonado eliminado correctamente'], 201);
+        $usuario->delete();
+        return response()->json(['ok' => true, 'message' => 'Usuario eliminado correctamente'], 201);
     }
     
 }
