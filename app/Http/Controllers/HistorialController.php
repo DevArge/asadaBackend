@@ -7,9 +7,10 @@ use App\Historial;
 
 class HistorialController extends Controller{
 
-    // public function __construct(){
-    //     $this->middleware('jwt.auth');
-    // }
+    public function __construct(){
+        $this->middleware('jwt.auth');
+        $this->middleware('admin');
+    }
 
     public function getHistoriales(Request $r){
         $historiales = Historial::paginar($r->desde, $r->cantidad, $r->columna, $r->orden)->get();

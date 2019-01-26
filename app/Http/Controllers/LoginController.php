@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use JWTAuth;
+use JWTException;
 
 class LoginController extends Controller{
 
     public function __construct(){
-        $this->middleware('jwt.auth',['only' => ['renuevaToken']]);
+        $this->middleware('jwt.auth',['only' => ['renuevaToken', 'deslogear']]);
     }
 
     public function login() {
@@ -21,6 +22,16 @@ class LoginController extends Controller{
             'token' => $token,
             'expires' => auth('api')->factory()->getTTL() * 60,
         ]);
+    }
+
+    public function logout(Request $request){
+        $token = JWTAuth::getToken();
+        try {
+            JWTAuth::invalidate($token);
+            return response()->json(['ok' => true, 'message'=> "Te has deslogueado de forma existosa"]);
+        } catch (JWTException $e) {
+            return response()->json(['ok' => false, 'error' => 'Error al desloguear, intenta nuevamente'], 500);
+        }
     }
 
     public function renuevaToken(){

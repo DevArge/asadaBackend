@@ -11,6 +11,7 @@ class DeudaController extends Controller{
 
     public function __construct(){
         $this->middleware('jwt.auth');
+        $this->middleware('secretaria');
     }
 
     public function getDeudas(Request $r, $id){

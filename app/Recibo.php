@@ -140,6 +140,11 @@ class Recibo extends Model{
         return Recibo::paginar($desde, $cantidad, $columna, $orden, $query)->get();
     }
 
+    public static function obtenerRecibosUnAbonado($desde, $cantidad, $columna, $orden, $id){
+        $query = Recibo::consultaSQL()->where('recibos.idAbonado', $id);
+        return Recibo::paginar($desde, $cantidad, $columna, $orden, $query)->get();
+    }
+
     public static function paginar($desde, $cantidad, $columna, $orden, $query){
         $desde = $desde ? $desde : 0;
         $cantidad = $cantidad ? $cantidad : 10;
@@ -183,8 +188,8 @@ class Recibo extends Model{
         ->join('recibos', 'lecturas.id', '=', 'recibos.idLectura')
         ->join('configuracion_recibos', 'configuracion_recibos.id', '=', 'recibos.idConfiguracionRecibos')
         ->select('abonados.id as abonado', 'abonados.cedula', 'abonados.nombre', 'abonados.apellido1', 'abonados.apellido2',
-                'abonados.direccion', 'medidores.id as medidor', 'tipo_de_medidores.nombre as tipo', 'lecturas.lectura',
-                'lecturas.metros', 'recibos.valorMetro', 'recibos.id', 'recibos.periodo', 'recibos.vence', 'recibos.cargoFijo',
+                'abonados.direccion', 'medidores.id as medidor', 'tipo_de_medidores.nombre as tipo', 'tipo_de_medidores.personalizado', 'lecturas.lectura',
+                'lecturas.metros', 'lecturas.nota', 'recibos.valorMetro', 'recibos.id', 'recibos.periodo', 'recibos.vence', 'recibos.cargoFijo',
                 'recibos.estado', 'reparacion', 'abonoMedidor', 'reactivacionMedidor', 'retrasoPago','total', 'hidrante');
         
     }

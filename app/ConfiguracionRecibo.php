@@ -8,7 +8,7 @@ use DB;
 class ConfiguracionRecibo extends Model{
 
     protected $table = 'configuracion_recibos';
-    protected $fillable = ['nombre', 'notificacion',  'fechaInicio', 'fechaFin', 'impuestoRetraso'];
+    protected $fillable = ['nombre', 'notificacion', 'notificacionDefault', 'fechaInicio', 'fechaFin', 'impuestoRetraso'];
 
     public static function obtenerConfiguraciones(){
         return DB::table('configuracion_recibos')

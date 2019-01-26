@@ -10,6 +10,7 @@ class AsadaController extends Controller{
 
     public function __construct(){
         $this->middleware('jwt.auth');
+        $this->middleware('admin');
     }
 
     public function getAsada(){

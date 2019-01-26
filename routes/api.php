@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 //=============================== Login ===================================
 //=========================================================================
 Route::post('login',                   'LoginController@login');
+Route::post('logout',                   'LoginController@logout');
 Route::get('renuevatoken',             'LoginController@renuevaToken');
 //=========================================================================
 //=============================== User ====================================
@@ -20,7 +21,6 @@ Route::delete('usuario/{id}',            'UserController@deleteUser');
 //=========================================================================
 Route::get('historial',                'HistorialController@getHistoriales');
 Route::post('historial',               'HistorialController@postHistorial');
-
 //=========================================================================
 //============================== Abonado ==================================
 //=========================================================================
@@ -65,6 +65,7 @@ Route::delete('lectura/{id}',                  'LecturaController@deleteLectura'
 Route::get('recibos',                         'ReciboController@getRecibos');
 Route::get('recibos/cuentas',                 'ReciboController@getCuentasRecibos');
 Route::get('recibos/medidor/{id}',            'ReciboController@getRecibosMedidor');
+Route::get('recibos/abonado/{id}',            'ReciboController@getRecibosAbonado');
 Route::get('recibos/buscar/{tipo}/{termino?}','ReciboController@buscarRecibos');
 Route::put('recibo/{id}',                     'ReciboController@putRecibo');
 Route::delete('recibo/{id}',                  'ReciboController@deleteRecibo');
@@ -83,8 +84,25 @@ Route::put('configuracion-medidores/{id}', 'ConfMedidorController@putConfMedidor
 //=========================================================================
 Route::get('configuracion-recibos',      'ConfReciboController@getConfRecibos');
 Route::put('configuracion-recibos/{id}', 'ConfReciboController@putConfRecibos');
-
-
+//=========================================================================
+//========================= Cuentas por pagar =============================
+//=========================================================================
+Route::get('cuentasAll',                'CuentasController@getCuentasAll');
+Route::get('cuentas',                   'CuentasController@getCuentas');
+Route::get('cuenta/{id}',               'CuentasController@getCuenta');
+Route::get('cuentas/buscar/{termino?}', 'CuentasController@buscarCuentas');
+Route::post('cuenta',                   'CuentasController@postCuenta');
+Route::put('cuenta/{id}',               'CuentasController@putCuenta');
+Route::delete('cuenta/{id}',            'CuentasController@deleteCuenta');
+//=========================================================================
+//======================= Facturas de cuentas =============================
+//=========================================================================
+Route::get('facturas',                   'FacturasCuentasController@getFacturas');
+Route::get('factura/{id}',               'FacturasCuentasController@getFactura');
+Route::get('facturas/buscar/{termino?}', 'FacturasCuentasController@buscarFacturas');
+Route::post('factura',                   'FacturasCuentasController@postFactura');
+Route::put('factura/{id}',               'FacturasCuentasController@putFactura');
+Route::delete('factura/{id}',            'FacturasCuentasController@deleteFactura');
 
 
 

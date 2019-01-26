@@ -120,6 +120,17 @@ class Lectura extends Model{
             ->first();
     }
 
+    public static function lecturasAnteriores($idMedidor, $periodo){
+        return DB::table('lecturas')
+            ->select('lectura', 'periodo', 'metros')
+            ->where('idMedidor', $idMedidor)
+            ->where('periodo', '<', $periodo)
+            ->orderBy('lectura', 'desc')
+            ->limit(3)
+            ->get();
+
+    }
+
     public static function existeLectura($idMedidor, $periodo){
         return DB::table('lecturas')
             ->select('lectura', 'periodo')

@@ -44,7 +44,8 @@ class DatabaseSeeder extends Seeder
 
         DB::table('configuracion_recibos')->insert([
             'impuestoRetraso' => 0,
-            'notificacion'    => 'A partir del dia siguiente a la fecha de vencimiento del mes que esta al cobro, se le concede tres dias habiles para su cancelacion con recargo, si en dicho plazo no cumple, se procede en cualquier momento a suspender el servicio.',
+            'notificacion'    => '',
+            'notificacionDefault'=> 'A partir del dia siguiente a la fecha de vencimiento del mes que esta al cobro, se le concede tres dias habiles para su cancelacion con recargo, si en dicho plazo no cumple, se procede en cualquier momento a suspender el servicio.',
             'fechaInicio'     => Carbon\Carbon::now(),
             'fechaFin'        => Carbon\Carbon::now()
         ]);

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateConfiguracionRecibosTable extends Migration
+class CreateDetalleFacturasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateConfiguracionRecibosTable extends Migration
      */
     public function up()
     {
-        Schema::create('configuracion_recibos', function (Blueprint $table) {
+        Schema::create('detalle_facturas', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('impuestoRetraso');
-            $table->string('notificacion', 255);
-            $table->string('notificacionDefault', 255);
-            $table->date('fechaInicio');
-            $table->date('fechaFin');
+            $table->integer('factura_id')->unsigned();
+            $table->string('nombre');
+            $table->decimal('precio',12,2);
+            $table->integer('cantidad');
+            $table->foreign('factura_id')->references('id')->on('facturas');            
             $table->timestamps();
         });
     }
@@ -31,6 +31,6 @@ class CreateConfiguracionRecibosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('configuracion_recibos');
+        Schema::dropIfExists('detalle_facturas');
     }
 }
