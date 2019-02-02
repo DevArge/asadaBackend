@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use DB;
 
 class Abonado extends Model{
-    
+
     use SoftDeletes;
     protected $table = 'abonados';
     protected $fillable = ['nombre', 'cedula', 'apellido1', 'apellido2', 'telefono', 'email', 'direccion', 'plano'];

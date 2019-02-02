@@ -23,7 +23,7 @@ class AbonadoController extends Controller{
     public function getAbonado(Request $request, $id){
         $abonado = Abonado::find($id);
         if (!$abonado) {
-            return response()->json(['ok'=> false, 'message' => 'El abonado con el ID: ' . $id . ' no existe'], 403);        
+            return response()->json(['ok'=> false, 'message' => 'El abonado con el ID: ' . $id . ' no existe'], 403);
         }
         return response()->json(['ok'=> true, 'abonado' => $abonado], 200);
     }
@@ -41,10 +41,10 @@ class AbonadoController extends Controller{
         return response()->json(['ok' => true, 'abonado' => $abonado], 201);
     }
 
-    public function putAbonado(AbonadoRequest $request, $id){
+    public function putAbonado(Request $request, $id){
         $abonado = Abonado::find($id);
         if (!$abonado) {
-            return response()->json(['ok'=> false, 'message' => 'El abonado con el ID: ' . $id . ' no existe'], 403);        
+            return response()->json(['ok'=> false, 'message' => 'El abonado con el ID: ' . $id . ' no existe'], 403);
         }
         $abonado->fill($request->all());
         $abonado->save();
@@ -54,7 +54,7 @@ class AbonadoController extends Controller{
     public function deleteAbonado($id){
         $abonado = Abonado::find($id);
         if (!$abonado) {
-            return response()->json(['ok'=> false, 'message' => 'El abonado con el ID: ' . $id . ' no existe'], 403);        
+            return response()->json(['ok'=> false, 'message' => 'El abonado con el ID: ' . $id . ' no existe'], 403);
         }
         $abonado->delete();
         return response()->json(['ok' => true, 'message' => 'Abonado eliminado correctamente'], 201);

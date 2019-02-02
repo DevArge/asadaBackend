@@ -25,8 +25,8 @@ class LoginController extends Controller{
     }
 
     public function logout(Request $request){
-        $token = JWTAuth::getToken();
         try {
+            $token = JWTAuth::getToken();
             JWTAuth::invalidate($token);
             return response()->json(['ok' => true, 'message'=> "Te has deslogueado de forma existosa"]);
         } catch (JWTException $e) {
@@ -44,5 +44,5 @@ class LoginController extends Controller{
             'expires' => auth('api')->factory()->getTTL() * 60,
         ]);
     }
-    
+
 }

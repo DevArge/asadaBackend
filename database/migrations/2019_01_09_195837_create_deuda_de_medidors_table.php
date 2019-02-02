@@ -21,6 +21,7 @@ class CreateDeudaDeMedidorsTable extends Migration
             $table->integer('plazo');
             $table->enum('tipoDeuda', ['REPARACION', 'ABONO', 'REACTIVACION']);
             $table->string('estado');
+            $table->string('detalleDeuda')->nullable();
             $table->timestamps();
         });
     }

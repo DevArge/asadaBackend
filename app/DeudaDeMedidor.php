@@ -8,7 +8,7 @@ use DB;
 class DeudaDeMedidor extends Model{
 
     protected $table = 'deuda_de_medidores';
-    protected $fillable = ['idMedidor', 'costoTotal',  'deuda', 'plazo', 'tipoDeuda', 'estado'];
+    protected $fillable = ['idMedidor', 'costoTotal',  'deuda', 'plazo', 'tipoDeuda', 'estado', 'detalleDeuda'];
 
     public static function guardar($req, $idMedidor){
         $deuda = new DeudaDeMedidor();
@@ -65,5 +65,5 @@ class DeudaDeMedidor extends Model{
         }
         return false;
     }
-    
+
 }
