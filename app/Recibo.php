@@ -16,7 +16,7 @@ use DB;
 class Recibo extends Model{
 
     protected $table = 'recibos';
-    protected $fillable = ['idMedidor', 'idAbonado', 'idLectura', 'idAsada',  'idConfiguracionRecibos', 
+    protected $fillable = ['idMedidor', 'idAbonado', 'idLectura', 'idAsada',  'idConfiguracionRecibos',
                            'periodo', 'estado', 'reparacion', 'abonoMedidor', 'reactivacionMedidor',
                            'retrasoPago', 'metrosConsumidos', 'cargoFijo', 'total', 'hidrante', 'valorMetro', 'vence'];
 
@@ -110,12 +110,12 @@ class Recibo extends Model{
                     }
                 }
             }
-            if ($recibo->reparacion > 0 ) {     
+            if ($recibo->reparacion > 0 ) {
                 Recibo::reintegrarDeuda($reparacion, 'REPARACION', $recibo->idMedidor);
-            } 
+            }
             if($recibo->abonoMedidor > 0 ){
-                Recibo::reintegrarDeuda($abonoMedidor, 'ABONO', $recibo->idMedidor);            
-            } 
+                Recibo::reintegrarDeuda($abonoMedidor, 'ABONO', $recibo->idMedidor);
+            }
             if($recibo->reactivacionMedidor > 0 ){
                 Recibo::reintegrarDeuda($reactivacionMedidor, 'REACTIVACION', $recibo->idMedidor);
             }
@@ -170,6 +170,50 @@ class Recibo extends Model{
         return Recibo::consultaSQL()->where('recibos.idMedidor', $idMedidor)->where('recibos.periodo', 'like', "%{$termino}%");
     }
 
+    public static function anadirImpuesto($periodo){
+      $vence = DB::table('recibos')->where('periodo', $periodo)->first();
+      if ($vence) {
+        $fechaVence = Carbon::createFromFormat('Y-m-d', $vence->vence);
+        $hoy = Carbon::now();
+        if ($fechaVence < $hoy) {
+          $actualizado = DB::table('recibos')
+                        ->where('periodo', $periodo)
+                        ->where('estado', 'PENDIENTE')
+                        ->where('retrasoPago', '=', 0)
+                        ->count();
+          if ($actualizado) {
+            $impuesto = DB::table('configuracion_recibos')->where('id', '>=', 1)->value('impuestoRetraso');
+            DB::table('recibos')
+                ->where('periodo', $periodo)
+                ->where('estado', 'PENDIENTE')
+                ->update(['retrasoPago' => $impuesto, 'total' => DB::raw("round(total + {$impuesto})")]);
+          }
+        }
+      }
+    }
+
+    public static function cambiarFechaVencimiento($periodo, $vence){
+      $fechaVence = Carbon::createFromFormat('Y-m-d', $vence);
+      $hoy = Carbon::now();
+      if ($fechaVence > $hoy) {
+        $actualizado = DB::table('recibos')
+                      ->where('periodo', $periodo)
+                      ->where('estado', 'PENDIENTE')
+                      ->where('retrasoPago', '>', 0)
+                      ->count();
+        if ($actualizado) {
+          $impuesto = DB::table('configuracion_recibos')->where('id', '>=', 1)->value('impuestoRetraso');
+          DB::table('recibos')
+              ->where('periodo', $periodo)
+              ->where('estado', 'PENDIENTE')
+              ->update(['retrasoPago' => 0, 'total' => DB::raw("round(total - {$impuesto})")]);
+        }
+      }
+      DB::table('recibos')
+      ->where('periodo', $periodo)
+      ->update(['vence' => $vence]);
+    }
+
     public static function calcularCuentas($periodo){
         return DB::table('recibos')
                 ->select(DB::raw('sum(abonoMedidor) as abonoMedidor, sum(reparacion) as reparacion,
@@ -177,7 +221,15 @@ class Recibo extends Model{
                 sum(hidrante) as hidrante, sum(metrosConsumidos * valorMetro) as consumo, sum(total) as total'))
                 ->where('periodo', $periodo)
                 ->get();
-        
+
+    }
+
+    public static function reciboPosterior($idMedidor, $periodo){
+      return DB::table('lecturas')
+          ->select('lectura', 'periodo')
+          ->where('idMedidor', $idMedidor)
+          ->where('periodo', '>', $periodo)
+          ->first();
     }
 
     public static function consultaSQL(){
@@ -188,10 +240,10 @@ class Recibo extends Model{
         ->join('recibos', 'lecturas.id', '=', 'recibos.idLectura')
         ->join('configuracion_recibos', 'configuracion_recibos.id', '=', 'recibos.idConfiguracionRecibos')
         ->select('abonados.id as abonado', 'abonados.cedula', 'abonados.nombre', 'abonados.apellido1', 'abonados.apellido2',
-                'abonados.direccion', 'medidores.id as medidor', 'tipo_de_medidores.nombre as tipo', 'tipo_de_medidores.personalizado', 'lecturas.lectura',
+                'abonados.direccion', 'medidores.id as medidor', 'medidores.detalle', 'tipo_de_medidores.nombre as tipo', 'tipo_de_medidores.personalizado', 'lecturas.lectura',
                 'lecturas.metros', 'lecturas.nota', 'recibos.valorMetro', 'recibos.id', 'recibos.periodo', 'recibos.vence', 'recibos.cargoFijo',
-                'recibos.estado', 'reparacion', 'abonoMedidor', 'reactivacionMedidor', 'retrasoPago','total', 'hidrante');
-        
+                'recibos.estado', 'reparacion', 'abonoMedidor', 'reactivacionMedidor', 'retrasoPago','total', 'hidrante', 'recibos.created_at');
+
     }
 
 }

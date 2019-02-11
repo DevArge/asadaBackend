@@ -23,11 +23,11 @@ class ConfReciboController extends Controller{
     public function putConfRecibos(Request $request, $id){
         $configuracion = ConfiguracionRecibo::find($id);
         if (!$configuracion) {
-            return response()->json(['ok'=> false, 'message' => 'No existe ninguna configuración con el ID: ' . $id . ' no existe'], 403);        
+            return response()->json(['ok'=> false, 'message' => 'No existe ninguna configuración con el ID: ' . $id . ' no existe'], 403);
         }
         $configuracion->fill($request->all());
         $configuracion->save();
-        return response()->json(['ok' => true, 'message' => 'Configuración de recibos actualizada correctamente'], 201);
+        return response()->json(['ok' => true, 'configuracion' => $configuracion], 201);
     }
-    
+
 }

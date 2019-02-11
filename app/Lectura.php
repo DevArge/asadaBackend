@@ -10,7 +10,7 @@ use Exception;
 use DB;
 
 class Lectura extends Model{
-    
+
     protected $table = 'lecturas';
     protected $fillable = ['idMedidor', 'lectura',  'promedio', 'periodo', 'nota', 'metros'];
 
@@ -65,8 +65,13 @@ class Lectura extends Model{
         });
     }
 
-    public static function obtenerLecturas($desde, $cantidad, $columna, $orden, $todos, $periodo){
+    public static function obtenerLecturas($desde, $cantidad, $columna, $orden, $periodo){
         $query = Lectura::consultaSQL($periodo);
+        return Lectura::paginar($desde, $cantidad, $columna, $orden, $query)->get();
+    }
+
+    public static function obtenerInsertarLecturas($desde, $cantidad, $columna, $orden, $periodo){
+        $query = Lectura::insertarLectura($periodo);
         return Lectura::paginar($desde, $cantidad, $columna, $orden, $query)->get();
     }
 
@@ -93,10 +98,25 @@ class Lectura extends Model{
         $nombre = Lectura::consultaSQL($periodo)->where('abonados.nombre', 'like', "%{$termino}%");
         $cedula = Lectura::consultaSQL($periodo)->where('cedula', 'like', "%{$termino}%");
         $apellido1 = Lectura::consultaSQL($periodo)->where('apellido1', 'like', "%{$termino}%");
-        $query = Lectura::consultaSQL($periodo)->where('apellido2', 'like', "%{$termino}%")
+        $apellido2 = Lectura::consultaSQL($periodo)->where('apellido2', 'like', "%{$termino}%");
+        $query = Lectura::consultaSQL($periodo)->where('medidores.detalle', 'like', "%{$termino}%")
                 ->union($nombre)
                 ->union($cedula)
-                ->union($apellido1);
+                ->union($apellido1)
+                ->union($apellido2);
+        return Lectura::paginar($desde, $cantidad, $columna, $orden, $query);
+    }
+
+    public static function buscarLecturasInsertar($termino, $periodo, $desde, $cantidad, $columna, $orden){
+        $nombre = Lectura::insertarLectura($periodo)->where('abonados.nombre', 'like', "%{$termino}%");
+        $cedula = Lectura::insertarLectura($periodo)->where('cedula', 'like', "%{$termino}%");
+        $apellido1 = Lectura::insertarLectura($periodo)->where('apellido1', 'like', "%{$termino}%");
+        $apellido2 = Lectura::insertarLectura($periodo)->where('apellido2', 'like', "%{$termino}%");
+        $query = Lectura::insertarLectura($periodo)->where('medidores.detalle', 'like', "%{$termino}%")
+                ->union($nombre)
+                ->union($cedula)
+                ->union($apellido1)
+                ->union($apellido2);
         return Lectura::paginar($desde, $cantidad, $columna, $orden, $query);
     }
 
@@ -161,22 +181,32 @@ class Lectura extends Model{
                 ->join('medidores', 'abonados.id', '=', 'medidores.idAbonado')
                 ->join('lecturas', 'medidores.id', '=', 'lecturas.idMedidor')
                 ->select('abonados.id', 'nombre', 'apellido1', 'apellido2', 'lecturas.id as idLectura',
-                    'medidores.id as medidor', 'lectura', 'metros', 'periodo')
+                    'medidores.id as medidor', 'detalle', 'lectura', 'metros', 'periodo')
                 ->where('medidores.id', '=', $idMedidor);
     }
 
-    public static function consultaSQL($periodo){
-        return DB::table('abonados')
-            ->join('medidores', 'abonados.id', '=', 'medidores.idAbonado')
-            ->leftjoin(DB::raw("(select * from lecturas where periodo ='" . $periodo ."' ) lecturas"),
-                function($join){
-                    $join->on('lecturas.idMedidor', '=', 'medidores.id');
-                })
-            ->select('abonados.id','nombre', 'apellido1', 'apellido2', 'promedio',
-            'medidores.id as medidor', 'detalle', 'lectura', 'metros', 'lecturas.id as idLectura')
-            ->where('medidores.estado', '!=', 'INACTIVO');
+
+    public static function insertarLectura($periodo){
+      return DB::table('abonados')
+          ->join('medidores', 'abonados.id', '=', 'medidores.idAbonado')
+          ->leftjoin(DB::raw("(select * from lecturas where periodo ='" . $periodo ."' ) lecturas"),
+              function($join){
+                  $join->on('lecturas.idMedidor', '=', 'medidores.id');
+              })
+          ->select('abonados.id','nombre', 'apellido1', 'apellido2', 'promedio', DB::raw("F_LecturaAnterior(medidores.id, '{$periodo}') as lecturaAnt"),
+          'medidores.id as medidor', 'detalle', 'lectura', 'nota', 'metros', 'lecturas.id as idLectura')
+          ->where('medidores.estado', '!=', 'INACTIVO');
     }
 
-    
+    public static function consultaSQL($periodo){
+      return DB::table('abonados')
+      ->join('medidores', 'abonados.id', '=', 'medidores.idAbonado')
+      ->join('lecturas', 'lecturas.idMedidor', '=', 'medidores.id')
+      ->select('abonados.id','nombre', 'apellido1', 'apellido2', 'promedio', DB::raw("F_LecturaAnterior(medidores.id, '{$periodo}') as lecturaAnt"),
+      'medidores.id as medidor', 'detalle', 'lectura', 'nota', 'metros', 'lecturas.id as idLectura')
+      ->where('medidores.estado', '!=', 'INACTIVO')
+      ->where('lecturas.periodo', $periodo);
+    }
+
 
 }

@@ -55,6 +55,7 @@ Route::put('medidor/deuda/{id}',           'DeudaController@putDeuda');
 //============================== Lectura ==================================
 //=========================================================================
 Route::get('lecturas',                         'LecturaController@getLecturas');
+Route::get('insertar-lecturas',                'LecturaController@getInsertarLecturas');
 Route::get('lecturas/medidor/{id}',            'LecturaController@getLecturasMedidor');
 Route::get('lecturas/buscar/{tipo}/{termino?}','LecturaController@buscarLecturas');
 Route::post('lectura',                         'LecturaController@postLectura');
@@ -69,6 +70,7 @@ Route::get('recibos/abonado/{id}',            'ReciboController@getRecibosAbonad
 Route::get('recibos/buscar/{tipo}/{termino?}','ReciboController@buscarRecibos');
 Route::put('recibo/{id}',                     'ReciboController@putRecibo');
 Route::delete('recibo/{id}',                  'ReciboController@deleteRecibo');
+Route::put('fecha-vencimiento',               'ReciboController@putFechaVencimiento');
 //=========================================================================
 //============================== ASADA ====================================
 //=========================================================================
@@ -103,6 +105,3 @@ Route::get('facturas/buscar/{termino?}', 'FacturasCuentasController@buscarFactur
 Route::post('factura',                   'FacturasCuentasController@postFactura');
 Route::put('factura/{id}',               'FacturasCuentasController@putFactura');
 Route::delete('factura/{id}',            'FacturasCuentasController@deleteFactura');
-
-
-

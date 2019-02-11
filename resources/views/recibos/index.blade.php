@@ -78,8 +78,8 @@
 
 
 </head><body style="background: #FFF">
-  
-  <?php 
+
+  <?php
 	$meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 	$vari = explode("-", $recibo->periodo);
 	$peri = $meses[(intval($vari[1])-1)] . " de " . $vari[0];
@@ -96,7 +96,7 @@
 
             <div class="panel-main">
               <div class="panel-header">
-                ASADA: {{$asada->nombre}} / Ced Jurídica: {{$asada->cedulaJuridica}}
+                ASADA: {{$asada->nombre}} / Ced Jurídica: {{$asada->cedulaJuridica}} / Teléfono: {{$asada->telefono}}
               </div>
 
               <div class="panel-body" style="height:440px;">
@@ -119,14 +119,6 @@
                         <tr>
                           <td><b>Dirección: </b> {{$recibo->direccion}}</td>
                         </tr>
-                        @foreach ($deudas as $deuda)
-                            <tr>
-                              <td><strong>Deuda del Medidor: </strong> ¢{{ $deuda->deuda }}</td>
-                            </tr>
-                            <tr>
-                              <td><strong>Abono por Período: </strong> ¢{{ $deuda->deudaTotal / $deuda->plazo }}</td>
-                            </tr>
-                        @endforeach
                       </table>
                     </td>
 
@@ -145,7 +137,7 @@
                         </tr>
 
                         <tr>
-                          <td><b>Período: </b> {{$recibo->periodo}}</td>
+                          <td><b>Período: </b> {{$peri}}</td>
                         </tr>
 
                         <tr>
@@ -388,7 +380,7 @@
 
                 <div class="panel-header">
                   <div class="header-title">
-                    ASADA: {{$asada->nombre}} 
+                    ASADA: {{$asada->nombre}}
                   </div>
                 </div>
 
@@ -402,7 +394,7 @@
                     <b>N° Medidor: </b> {{$recibo->medidor}}<br>
                     <b>Tipo de Medidor: </b> {{$recibo->tipo}}<br><br>
                     <div style="border-bottom: 0.5px solid #555;"></div><br>
-                    <b>Período: </b> {{$recibo->periodo}}<br>
+                    <b>Período: </b> {{$peri}}<br>
                     <b>N° Recibo: </b> {{$recibo->id}}<br>
                     <b>VENCE: {{$mesVencimiento }}</b><br><br>
                   </div>
@@ -443,19 +435,19 @@
                                 <td>¢{{$recibo->reactivacionMedidor}}</td>
                                 </tr>
                             @endif
-                            @if($recibo->abonoMedidor > 0)                            
+                            @if($recibo->abonoMedidor > 0)
                                 <tr>
                                     <td>ABONO DE MEDIDOR: </td>
                                     <td>¢{{$recibo->abonoMedidor}}</td>
                                 </tr>
                             @endif
-                            @if($recibo->reparacion > 0)                                  
+                            @if($recibo->reparacion > 0)
                               <tr>
                                 <td>REPARACIÓN DEL MEDIDOR:</td>
                                 <td>¢{{$recibo->reparacion}}</td>
                               </tr>
                             @endif
-                            @if($recibo->retrasoPago > 0)                                  
+                            @if($recibo->retrasoPago > 0)
                               <tr>
                                 <td>MULTA POR ATRASO:</td>
                                 <td>¢{{$recibo->retrasoPago}}</td>
