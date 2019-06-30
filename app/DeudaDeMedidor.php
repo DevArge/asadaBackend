@@ -17,14 +17,19 @@ class DeudaDeMedidor extends Model{
         $deuda->deuda = $req->costoTotal;
         $deuda->idMedidor = $idMedidor;
         $deuda->save();
+        return $deuda;
     }
 
     public static function actualizar($idMedidor, $monto, $tipoDeuda){
         $arreglo = $monto == 0 ? ['deuda' => $monto, 'estado' => 'COBRADO'] : ['deuda' => $monto, 'estado' => 'PENDIENTE'];
-        $deuda = DB::table('deuda_de_medidores')
+        DB::table('deuda_de_medidores')
             ->where('idMedidor', $idMedidor)
             ->where('tipoDeuda', $tipoDeuda)
             ->update($arreglo);
+        return DB::table('deuda_de_medidores')
+            ->where('idMedidor', $idMedidor)
+            ->where('tipoDeuda', $tipoDeuda)
+            ->first();
     }
 
     public static function getDeuda($idMedidor, $tipoDeuda){
@@ -64,6 +69,29 @@ class DeudaDeMedidor extends Model{
             $suma = $suma + $abono;
         }
         return false;
+    }
+
+    public static function toString($old, $new, $eliminado = false){
+      $detalle = 'Medidor: #' . $old->idMedidor . "\r\n" .
+            'Costo Total: ' . $old->costoTotal . "\r\n" .
+            'Deuda: ' . $old->deuda . "\r\n" .
+            'Plazo: ' . $old->plazo . "\r\n" .
+            'Tipo de deuda: ' . $old->tipoDeuda . "\r\n" .
+            'Estado: ' . $old->estado . "\r\n" .
+            'Detalle: ' . $old->detalleDeuda . "\r\n";
+      if ($eliminado) {
+        return $detalle;
+      }else {
+        return  $detalle .
+        "\r\n SE ACTUALIZÓ A: \r\n \r\n" .
+        'Medidor: #: ' . $new->idMedidor . "\r\n" .
+        'Costo Total: ' . $new->costoTotal . "\r\n" .
+        'Deuda: ' . $new->deuda . "\r\n" .
+        'Plazo: ' . $new->plazo . "\r\n" .
+        'Tipo de deuda: ' . $new->tipoDeuda . "\r\n" .
+        'Estado: ' . $new->estado . "\r\n" .
+        'Detalle: ' . $new->detalleDeuda . "\r\n";
+      }
     }
 
 }

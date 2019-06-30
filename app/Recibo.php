@@ -246,4 +246,39 @@ class Recibo extends Model{
 
     }
 
+    public static function toString($old, $new, $comparar = false){
+      $detalle = 'Numero de Medidor: ' . $old->idMedidor . "\r\n" .
+            'Periodo: ' . $old->periodo . "\r\n" .
+            'Estado: ' . $old->estado . "\r\n" .
+            'Reparación: ' . $old->reparacion . "\r\n" .
+            'Abono de medidor: ' . $old->abonoMedidor . "\r\n" .
+            'Reactivación de Medidor: ' . $old->reactivacionMedidor . "\r\n" .
+            'Retraso de pago: ' . $old->retrasoPago . "\r\n" .
+            'Metros consumidos: ' . $old->metrosConsumidos . "\r\n" .
+            'Cargo fijo: ' . $old->cargoFijo . "\r\n" .
+            'Hidrante: ' . $old->hidrante . "\r\n" .
+            'Valor del metro: ' . $old->valorMetro . "\r\n" .
+            'Vence: ' . $old->vence . "\r\n" .
+            'Total: ' . $old->total . "\r\n";
+      if ($comparar) {
+        return $detalle;
+      }else {
+        return  $detalle .
+        "\r\n SE ACTUALIZÓ A: \r\n \r\n" .
+        'Numero de Medidor: ' . $new->idMedidor . "\r\n" .
+        'Periodo: ' . $new->periodo . "\r\n" .
+        'Estado: ' . $new->estado . "\r\n" .
+        'Reparación: ' . $new->reparacion . "\r\n" .
+        'Abono de medidor: ' . $new->abonoMedidor . "\r\n" .
+        'Reactivación de Medidor: ' . $new->reactivacionMedidor . "\r\n" .
+        'Retraso de pago: ' . $new->retrasoPago . "\r\n" .
+        'Metros consumidos: ' . $new->metrosConsumidos . "\r\n" .
+        'Cargo fijo: ' . $new->cargoFijo . "\r\n" .
+        'Hidrante: ' . $old->hidrante . "\r\n" .
+        'Valor del metro: ' . $old->valorMetro . "\r\n" .
+        'Vence: ' . $new->vence . "\r\n" .
+        'Total: ' . $new->total . "\r\n";
+      }
+    }
+
 }

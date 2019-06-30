@@ -19,7 +19,8 @@ class CreateDetalleFacturasTable extends Migration
             $table->string('nombre');
             $table->decimal('precio',12,2);
             $table->integer('cantidad');
-            $table->foreign('factura_id')->references('id')->on('facturas');            
+            $table->integer('total');
+            $table->foreign('factura_id')->references('id')->on('facturas');
             $table->timestamps();
         });
     }

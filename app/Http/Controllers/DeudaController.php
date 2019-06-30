@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Medidor;
 use App\DeudaDeMedidor;
+use App\Historial;
 use DB;
 
 class DeudaController extends Controller{
@@ -39,7 +40,9 @@ class DeudaController extends Controller{
             return response()->json(['ok'=> false, 'message' => 'No se puede añadir una reparación a un medidor INACTIVO'], 400);
         }
         $request->request->add(['plazo' => 1]);
-        DeudaDeMedidor::guardar($request, $medidor->id);
+        $reparacion = DeudaDeMedidor::guardar($request, $medidor->id);
+        $detalle = DeudaDeMedidor::toString($reparacion, $reparacion, true);
+        Historial::crearHistorial('Añadio una reparación al medidor #' . $medidor->id, $detalle);
         return response()->json(['ok' => true, 'message' => 'Costo de reparacion añadida correctamente'], 201);
     }
 
@@ -52,7 +55,9 @@ class DeudaController extends Controller{
         if (!$multiplo) {
             return response()->json(['ok'=> false, 'message' => 'la deuda tiene que ser multiplo del total de la deuda divido entre: ' . $deuda->plazo . ' o cero'], 400);
         }
-        DeudaDeMedidor::actualizar($deuda->idMedidor, $request->deuda, $deuda->tipoDeuda);
+        $newDeuda = DeudaDeMedidor::actualizar($deuda->idMedidor, $request->deuda, $deuda->tipoDeuda);
+        $detalle = DeudaDeMedidor::toString($deuda, $newDeuda);
+        Historial::crearHistorial('Actualizó la deuda del medidor #' . $deuda->idMedidor, $detalle);
         return response()->json(['ok' => true, 'message' => 'Deuda actualizada correctamente'], 201);
     }
 

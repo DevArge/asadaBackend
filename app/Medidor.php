@@ -58,4 +58,21 @@ class Medidor extends Model{
             return $query;
         }
     }
+
+    public static function toString($old, $new, $eliminado = false){
+      $detalle = 'Numero de Medidor: ' . $old->id . "\r\n" .
+            'ID Tipo de Medidor: ' . $old->idTipoDeMedidor . "\r\n" .
+            'Estado: ' . $old->estado . "\r\n" .
+            'Detalle: ' . $old->detalle . "\r\n";
+      if ($eliminado) {
+        return $detalle;
+      }else {
+        return  $detalle .
+        "\r\n SE ACTUALIZÓ A: \r\n \r\n" .
+        'Numero de Medidor: #' . $new->id . "\r\n" .
+        'ID Tipo de Medidor: ' . $new->idTipoDeMedidor . "\r\n" .
+        'Estado: ' . $new->estado . "\r\n" .
+        'Detalle: ' . $new->detalle;
+      }
+    }
 }

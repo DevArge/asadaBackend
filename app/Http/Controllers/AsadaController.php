@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Asada;
+use App\Historial;
 use DB;
 
 class AsadaController extends Controller{
@@ -20,12 +21,15 @@ class AsadaController extends Controller{
 
     public function putAsada(Request $request, $id){
         $asada = Asada::find($id);
+        $original = Asada::find($id);
         if (!$asada) {
-            return response()->json(['ok'=> false, 'message' => 'LA ASADA con el ID: ' . $id . ' no existe'], 403);        
+            return response()->json(['ok'=> false, 'message' => 'LA ASADA con el ID: ' . $id . ' no existe'], 403);
         }
         $asada->fill($request->all());
         $asada->save();
+        $detalle = Asada::toString($original, $asada);
+        Historial::crearHistorial('Actualizó la información de la ASADA ', $detalle);
         return response()->json(['ok' => true, 'message' => 'ASADA actualizada correctamente'], 201);
     }
-    
+
 }

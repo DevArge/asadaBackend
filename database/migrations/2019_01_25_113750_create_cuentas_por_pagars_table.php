@@ -17,6 +17,8 @@ class CreateCuentasPorPagarsTable extends Migration
             $table->increments('id');
             $table->integer('idAsada')->unsigned();
             $table->string('nombre');
+            $table->string('codigo');
+            $table->string('description');
             $table->enum('tipo', ['INVERSION', 'GASTO']);
             $table->decimal('presupuesto', 12,2)->nullable();
             $table->foreign('idAsada')->references('id')->on('asadas');

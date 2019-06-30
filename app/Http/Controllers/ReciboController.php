@@ -7,14 +7,15 @@ use App\Recibo;
 use App\Lectura;
 use App\Medidor;
 use App\Abonado;
+use App\Historial;
 use DB;
 
 class ReciboController extends Controller{
 
-    // public function __construct(){
-    //     $this->middleware('jwt.auth', ['except' => ['getRecibosAbonado']]);
-    //     $this->middleware('secretaria', ['only' => ['getCuentasRecibos', 'putRecibo', 'deleteRecibo']]);
-    // }
+    public function __construct(){
+        $this->middleware('jwt.auth', ['except' => ['getRecibosAbonado']]);
+        $this->middleware('secretaria', ['only' => ['getCuentasRecibos', 'putRecibo', 'deleteRecibo']]);
+    }
 
     public function getRecibos(Request $r){
         $formatoValido = Lectura::validarFormatoPeriodo($r->periodo);
@@ -92,6 +93,8 @@ class ReciboController extends Controller{
         }
         $recibo->estado = 'PAGADO';
         $recibo->save();
+        $detalle = Recibo::toString($recibo, $recibo, true);
+        Historial::crearHistorial('Pagó el recibo #' . $recibo->id, $detalle);
         return response()->json(['ok' => true, 'message' => 'Recibo ha sido pagado correctamente'], 201);
     }
 
@@ -108,6 +111,8 @@ class ReciboController extends Controller{
         $lectura = Lectura::find($recibo->idLectura);
         $recibo->delete();
         $lectura->delete();
+        $detalle = Recibo::toString($recibo, $recibo, true);
+        Historial::crearHistorial('Eliminó el recibo #' . $recibo->id, $detalle);
         return response()->json(['ok' => true, 'message' => 'Recibo eliminado correctamente'], 201);
     }
 
@@ -119,6 +124,7 @@ class ReciboController extends Controller{
           return response()->json(['ok'=> false, 'message' => 'Debe de mandar la fecha de vencimiento por parametro'], 400);
       }
       Recibo::cambiarFechaVencimiento($r->periodo, $r->vence);
+      Historial::crearHistorial('Cambió la fecha de vencimiento de los recibos del periodo: ' . $r->periodo, 'Ahora vencen el ' . $r->vence);
       return response()->json(['ok' => true, 'message' => 'Fecha actualizada correctamente'], 201);
     }
 

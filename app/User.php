@@ -69,4 +69,19 @@ class User extends Authenticatable implements JWTSubject{
                 ->get();
     }
 
+    public static function toString($old, $new, $eliminado = false){
+      $detalle = 'Nombre: ' . $old->nombre . "\r\n" .
+            'Role: ' . $old->role . "\r\n" .
+            'Email: ' . $old->email . "\r\n";
+      if ($eliminado) {
+        return $detalle;
+      }else {
+        return  $detalle .
+        "\r\n SE ACTUALIZÓ A: \r\n \r\n" .
+        'Nombre: ' . $new->nombre . "\r\n" .
+        'Role: ' . $new->role . "\r\n" .
+        'Email: ' . $new->email;
+      }
+    }
+
 }

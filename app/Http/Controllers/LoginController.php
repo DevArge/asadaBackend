@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use JWTAuth;
 use JWTException;
+use DB;
+use Hash;
 
 class LoginController extends Controller{
 
     public function __construct(){
-        $this->middleware('jwt.auth',['only' => ['renuevaToken', 'deslogear']]);
+      $this->middleware('jwt.auth',['only' => ['renuevaToken', 'deslogear', 'compararPasswords']]);
     }
 
     public function login() {
@@ -43,6 +45,18 @@ class LoginController extends Controller{
             'token' => $newToken,
             'expires' => auth('api')->factory()->getTTL() * 60,
         ]);
+    }
+
+    public function compararPasswords(Request $request, $id){
+      $pass = DB::table('users')->where('id',$id)->value('password');
+      if (!$pass) {
+          return response()->json(['ok'=> false, 'message' => 'El usuario no existe'], 403);
+      }
+      if (Hash::check($request->password, $pass)) {
+        return response()->json(['ok' => true, 'message' => 'Contraseñas iguales'], 200);
+      }else{
+        return response()->json(['ok' => false, 'message' => 'La contraseña actual es diferente'], 403);
+      }
     }
 
 }

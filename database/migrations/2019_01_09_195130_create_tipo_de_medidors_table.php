@@ -18,6 +18,7 @@ class CreateTipoDeMedidorsTable extends Migration
             $table->string('nombre');
             $table->decimal('precio', 8, 2);
             $table->boolean('personalizado')->default(false);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

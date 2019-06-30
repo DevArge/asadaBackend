@@ -4,15 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Factura;
+use App\Historial;
 use App\DetalleFactura;
 use DB;
 
 class FacturasCuentasController extends Controller{
 
-    // public function __construct(){
-    //     $this->middleware('jwt.auth');
-    //     $this->middleware('secretaria');
-    // }
+    public function __construct(){
+        $this->middleware('jwt.auth');
+        $this->middleware('secretaria');
+    }
 
     public function getFacturas(Request $r){
         $total = DB::table('facturas')->count();
@@ -23,9 +24,8 @@ class FacturasCuentasController extends Controller{
     public function getFactura(Request $request, $id){
         $cuenta = Factura::find($id);
         if (!$cuenta) {
-            return response()->json(['ok'=> false, 'message' => 'El ID: ' . $id . ' no existe'], 403);        
+            return response()->json(['ok'=> false, 'message' => 'El ID: ' . $id . ' no existe'], 403);
         }
-        // $proyectos = Proyectos::all();
         $factura = Factura::with('productos')->findOrFail($id);
         return response()->json(['ok'=> true, 'factura' => $factura], 200);
     }
@@ -47,9 +47,9 @@ class FacturasCuentasController extends Controller{
             'productos.*.precio' => 'required|numeric|min:1',
             'productos.*.cantidad' => 'required|integer|min:1'
         ]);
-  
+
         $productos = collect($request->productos)->transform(function($product) {
-            $product['total'] = $product['cantidad'] * $product['precio']; 
+            $product['total'] = $product['cantidad'] * $product['precio'];
             return new DetalleFactura($product);
         });
         if($productos->isEmpty()) {
@@ -60,6 +60,8 @@ class FacturasCuentasController extends Controller{
         $data['grand_total'] = $data['sub_total'] - $data['descuento'];
         $factura = Factura::create($data);
         $factura->productos()->saveMany($productos);
+        $detalle = Factura::toString($factura, $factura, true);
+        Historial::crearHistorial('Creo la factura #' . $factura->numero, $detalle);
         return response()->json(['created' => true, 'id' => $factura->id ]);
     }
 
@@ -75,6 +77,7 @@ class FacturasCuentasController extends Controller{
             'productos.*.cantidad' => 'required|integer|min:1'
         ]);
         $factura = Factura::findOrFail($id);
+        $original = Factura::findOrFail($id);
         $productos = collect($request->productos)->transform(function($product) {
             $product['total'] = $product['cantidad'] * $product['precio'];
             return new DetalleFactura($product);
@@ -88,16 +91,20 @@ class FacturasCuentasController extends Controller{
         $factura->update($data);
         DetalleFactura::where('factura_id', $factura->id)->delete();
         $factura->productos()->saveMany($productos);
+        $detalle = Factura::toString($original, $factura);
+        Historial::crearHistorial('Actualizó la factura #' . $factura->numero, $detalle);
         return response()->json([ 'updated' => true, 'id' => $factura->id ]);
     }
 
     public function deleteFactura($id){
         $factura = Factura::find($id);
         if (!$factura) {
-            return response()->json(['ok'=> false, 'message' => 'El ID: ' . $id . ' no existe'], 403);        
+            return response()->json(['ok'=> false, 'message' => 'El ID: ' . $id . ' no existe'], 403);
         }
         DetalleFactura::where('factura_id', $factura->id)->delete();
         $factura->delete();
+        $detalle = Factura::toString($factura, $factura, true);
+        Historial::crearHistorial('Eliminó la factura #' . $factura->numero, $detalle);
         return response()->json(['ok' => true, 'message' => 'Factura eliminada correctamente'], 201);
     }
 }

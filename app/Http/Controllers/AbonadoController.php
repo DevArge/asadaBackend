@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Abonado;
+use App\Historial;
 use App\Http\Requests\AbonadoRequest;
 use DB;
 
@@ -17,7 +18,7 @@ class AbonadoController extends Controller{
     public function getAbonados(Request $r){
         $total = DB::table('abonados')->where('deleted_at', null)->count();
         $abonados = Abonado::obtenerAbonados($r->desde, $r->cantidad, $r->columna, $r->orden);
-        return response()->json(['ok'=> true, 'abonados' => $abonados, 'total' => $total], 200);
+        return response()->json(['ok'=> true, 'abonados' => $abonados, 'total' => $total, 'test' => \Auth::user()], 200);
     }
 
     public function getAbonado(Request $request, $id){
@@ -38,16 +39,21 @@ class AbonadoController extends Controller{
         $abonado = new Abonado();
         $abonado->fill($request->all());
         $abonado->save();
+        $detalle = Abonado::toString($abonado, $abonado, true);
+        Historial::crearHistorial('Creo al Abonado ' . $abonado->nombre . ' ' . $abonado->apellido1, $detalle);
         return response()->json(['ok' => true, 'abonado' => $abonado], 201);
     }
 
     public function putAbonado(Request $request, $id){
         $abonado = Abonado::find($id);
+        $original = Abonado::find($id);
         if (!$abonado) {
             return response()->json(['ok'=> false, 'message' => 'El abonado con el ID: ' . $id . ' no existe'], 403);
         }
         $abonado->fill($request->all());
         $abonado->save();
+        $detalle = Abonado::toString($original, $abonado);
+        Historial::crearHistorial('Actualizó al Abonado ' . $original->nombre . ' ' . $original->apellido1, $detalle);
         return response()->json(['ok' => true, 'message' => 'Abonado actualizado correctamente'], 201);
     }
 
@@ -57,6 +63,8 @@ class AbonadoController extends Controller{
             return response()->json(['ok'=> false, 'message' => 'El abonado con el ID: ' . $id . ' no existe'], 403);
         }
         $abonado->delete();
+        $detalle = Abonado::toString($abonado, $abonado, true);
+        Historial::crearHistorial('Eliminó al Abonado ' . $abonado->nombre . ' ' . $abonado->apellido1, $detalle);
         return response()->json(['ok' => true, 'message' => 'Abonado eliminado correctamente'], 201);
     }
 

@@ -2,11 +2,17 @@
 
 use Illuminate\Http\Request;
 //=========================================================================
+//=============================== Dashboard ===============================
+//=========================================================================
+Route::get('dashboard',             'DashboardController@getIndex');
+
+//=========================================================================
 //=============================== Login ===================================
 //=========================================================================
 Route::post('login',                   'LoginController@login');
-Route::post('logout',                   'LoginController@logout');
+Route::post('logout',                  'LoginController@logout');
 Route::get('renuevatoken',             'LoginController@renuevaToken');
+Route::post('compararpassword/{id}',   'LoginController@compararPasswords');
 //=========================================================================
 //=============================== User ====================================
 //=========================================================================
@@ -15,6 +21,8 @@ Route::get('usuario/{id}',               'UserController@getUser');
 Route::get('usuarios/buscar/{termino?}', 'UserController@buscarUsers');
 Route::post('usuario',                   'UserController@postUser');
 Route::put('usuario/{id}',               'UserController@putUser');
+Route::put('actualizarPerfil/{id}',      'UserController@actualizarPerfil');
+Route::put('actualizarPassword/{id}',    'UserController@actualizarPassword');
 Route::delete('usuario/{id}',            'UserController@deleteUser');
 //=========================================================================
 //========================= Historial User ================================
@@ -33,8 +41,10 @@ Route::delete('abonado/{id}',            'AbonadoController@deleteAbonado');
 //=========================================================================
 //============================== TipoMedidor ==============================
 //=========================================================================
-Route::get('tiposDeMedidores', 'TipoMedidorController@getTipodeMedidores');
-Route::post('tipoDeMedidor',   'TipoMedidorController@postTipoMedidor');
+Route::get('tiposDeMedidores',      'TipoMedidorController@getTipodeMedidores');
+Route::post('tipoDeMedidor',        'TipoMedidorController@postTipoMedidor');
+Route::put('tipoDeMedidor/{id}',    'TipoMedidorController@putTipoMedidor');
+Route::delete('tipoDeMedidor/{id}', 'TipoMedidorController@deleteTipoMedidor');
 //=========================================================================
 //============================== Medidor ==================================
 //=========================================================================

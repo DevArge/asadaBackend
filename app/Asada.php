@@ -15,5 +15,22 @@ class Asada extends Model{
                 ->where('id', '>=', 1)
                 ->value('id');
     }
-    
+
+    public static function toString($old, $new, $eliminado = false){
+      $detalle = 'Nombre: ' . $old->nombre . "\r\n" .
+            'Cédula Jurídica: ' . $old->cedulaJuridica . "\r\n" .
+            'Teléfono: ' . $old->telefono . "\r\n" .
+            'Dirección: ' . $old->direccion . "\r\n";
+      if ($eliminado) {
+        return $detalle;
+      }else {
+        return  $detalle .
+        "\r\n SE ACTUALIZÓ A: \r\n \r\n" .
+        'Nombre: ' . $new->nombre . "\r\n" .
+        'Cédula Jurídica: ' . $new->cedulaJuridica . "\r\n" .
+        'Teléfono: ' . $new->telefono . "\r\n" .
+        'Dirección: ' . $new->direccion . "\r\n";
+      }
+    }
+
 }

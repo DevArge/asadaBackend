@@ -17,7 +17,7 @@ class CreateHistorialsTable extends Migration
             $table->increments('id');
             $table->integer('idUsuario')->unsigned();
             $table->string('actividad');
-            $table->string('detalle');
+            $table->longText('detalle');
             $table->foreign('idUsuario')->references('id')->on('users');
             $table->timestamps();
         });
