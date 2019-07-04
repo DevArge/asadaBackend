@@ -13,11 +13,11 @@ class CORS
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
-    {
-        return $next($request)
-        ->header('Access-Control-Allow-Origin', '*')//el asterisco significa que todos los dominios pueden acceder al Api de larave
-        ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS')//define los metodos que pueden ser accedidos
-        ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    public function handle($request, Closure $next){
+      $response = $next($request);
+      $response->headers->set('Access-Control-Allow-Origin' , '*');
+      $response->headers->set('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT, DELETE');
+      $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Accept, Authorization, X-Requested-With, Application');
+      return $response;
     }
 }

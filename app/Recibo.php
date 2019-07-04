@@ -12,13 +12,41 @@ use App\Abonado;
 use App\Asada;
 use Carbon\Carbon;
 use DB;
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\AfterSheet;
 
-class Recibo extends Model{
+class Recibo extends Model implements FromCollection, WithHeadings, ShouldAutoSize, WithEvents{
 
     protected $table = 'recibos';
     protected $fillable = ['idMedidor', 'idAbonado', 'idLectura', 'idAsada',  'idConfiguracionRecibos',
                            'periodo', 'estado', 'reparacion', 'abonoMedidor', 'reactivacionMedidor',
                            'retrasoPago', 'metrosConsumidos', 'cargoFijo', 'total', 'hidrante', 'valorMetro', 'vence'];
+
+    public function collection(){
+      $sql = Recibo::consultaSQL()->where('recibos.periodo', $_SESSION["periodo"])->get();
+      unset($_SESSION["periodo"]);
+      return $sql;
+    }
+
+    public function headings(): array{
+         return [
+           'Abonado', 'Cédula', 'Nombre', 'Apellido1', 'Apellido2',
+                   'Dirección', 'Medidor', 'Detalle del medidor', 'Tipo', 'Personalizado', 'Lectura',
+                   'Metros', 'Nota', 'Valor del Metro', 'Numero de recibo', 'Periodo', 'Fecha de vencimiento', 'Cargo Fijo',
+                   'Estado', 'Costo de Reparación', 'Abono de Medidor', 'Reactivacion del Medidor', 'Retraso de Pago', 'Hidrante', 'Generado','Total'
+         ];
+    }
+    public function registerEvents(): array{
+        return [
+            AfterSheet::class    => function(AfterSheet $event) {
+                $cellRange = 'A1:Z1'; // All headers
+                $event->sheet->getDelegate()->getStyle($cellRange)->getFont()->setSize(14);
+            },
+        ];
+    }
 
     public static function crearRecibo($idMedidor, $idLectura, $periodo, $metros){
         $vence = Carbon::createFromFormat('Y-m-d', $periodo . '-01')->addMonth()->addDays(14);
@@ -242,7 +270,7 @@ class Recibo extends Model{
         ->select('abonados.id as abonado', 'abonados.cedula', 'abonados.nombre', 'abonados.apellido1', 'abonados.apellido2',
                 'abonados.direccion', 'medidores.id as medidor', 'medidores.detalle', 'tipo_de_medidores.nombre as tipo', 'tipo_de_medidores.personalizado', 'lecturas.lectura',
                 'lecturas.metros', 'lecturas.nota', 'recibos.valorMetro', 'recibos.id', 'recibos.periodo', 'recibos.vence', 'recibos.cargoFijo',
-                'recibos.estado', 'reparacion', 'abonoMedidor', 'reactivacionMedidor', 'retrasoPago','total', 'hidrante', 'recibos.created_at');
+                'recibos.estado', 'reparacion', 'abonoMedidor', 'reactivacionMedidor', 'retrasoPago', 'hidrante', 'recibos.created_at','total');
 
     }
 

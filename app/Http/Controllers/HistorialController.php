@@ -10,7 +10,7 @@ class HistorialController extends Controller{
 
     public function __construct(){
         $this->middleware('jwt.auth');
-        $this->middleware('admin');
+        $this->middleware('secretaria');
     }
 
     public function getHistoriales(Request $r){

@@ -4,3 +4,4 @@
 //=========================== Recibo PDF ==================================
 //=========================================================================
 Route::get('recibo/pdf/{id}',      'PDFController@getRecibo');
+Route::get('reporte/excel/{periodo}',        'ExcelController@export');

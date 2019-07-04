@@ -22,7 +22,7 @@ class LoginController extends Controller{
         return response()->json([
             'ok' => true,
             'token' => $token,
-            'expires' => auth('api')->factory()->getTTL() * 60,
+            'expires' => auth('api')->factory()->getTTL() * 240,
         ]);
     }
 
@@ -43,7 +43,7 @@ class LoginController extends Controller{
         return response()->json([
             'ok' => true,
             'token' => $newToken,
-            'expires' => auth('api')->factory()->getTTL() * 60,
+            'expires' => auth('api')->factory()->getTTL() * 240,
         ]);
     }
 
