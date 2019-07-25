@@ -13,7 +13,7 @@ use DB;
 class ReciboController extends Controller{
 
     public function __construct(){
-        $this->middleware('jwt.auth', ['except' => ['getRecibosAbonado']]);
+        $this->middleware('jwt.auth', ['except' => ['getRecibosAbonado', 'getRecibosAbonadoPendiente']]);
         $this->middleware('secretaria', ['only' => ['getCuentasRecibos', 'putRecibo', 'deleteRecibo']]);
     }
 
@@ -45,6 +45,16 @@ class ReciboController extends Controller{
         }
         $total = DB::table('recibos')->where('idAbonado', $id)->count();
         $recibos = Recibo::obtenerRecibosUnAbonado($r->desde, $r->cantidad, $r->columna, $r->orden, $id);
+        return response()->json(['ok'=> true, 'recibos' => $recibos, 'total' => $total], 200);
+    }
+
+    public function getRecibosAbonadoPendiente(Request $r, $id){
+        $abonado = Abonado::find($id);
+        if (!$abonado) {
+            return response()->json(['ok'=> false, 'message' => 'El abonado con el ID: ' . $id . ' no existe'], 403);
+        }
+        $total = DB::table('recibos')->where('idAbonado', $id)->where('estado', 'PENDIENTE')->count();
+        $recibos = Recibo::obtenerRecibosUnAbonadoPendiente($r->desde, $r->cantidad, $r->columna, $r->orden, $id);
         return response()->json(['ok'=> true, 'recibos' => $recibos, 'total' => $total], 200);
     }
 

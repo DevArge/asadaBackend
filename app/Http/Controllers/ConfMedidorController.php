@@ -9,8 +9,8 @@ use App\Historial;
 class ConfMedidorController extends Controller{
 
     public function __construct(){
-        $this->middleware('jwt.auth');
-        $this->middleware('admin');
+      $this->middleware('jwt.auth', ['only' => ['putConfMedidores']]);
+      $this->middleware('admin',  ['only' => ['putConfMedidores']]);
     }
 
     public function getConfMedidores(){

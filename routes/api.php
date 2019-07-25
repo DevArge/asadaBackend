@@ -2,10 +2,13 @@
 
 use Illuminate\Http\Request;
 //=========================================================================
+//===============================    MAIL   ===============================
+//=========================================================================
+Route::post('correo',               'EmailController@enviarCorreo');
+//=========================================================================
 //=============================== Dashboard ===============================
 //=========================================================================
 Route::get('dashboard',             'DashboardController@getIndex');
-
 //=========================================================================
 //=============================== Login ===================================
 //=========================================================================
@@ -77,6 +80,7 @@ Route::get('recibos',                         'ReciboController@getRecibos');
 Route::get('recibos/cuentas',                 'ReciboController@getCuentasRecibos');
 Route::get('recibos/medidor/{id}',            'ReciboController@getRecibosMedidor');
 Route::get('recibos/abonado/{id}',            'ReciboController@getRecibosAbonado');
+Route::get('recibos/abonadoPendiente/{id}',   'ReciboController@getRecibosAbonadoPendiente');
 Route::get('recibos/buscar/{tipo}/{termino?}','ReciboController@buscarRecibos');
 Route::put('recibo/{id}',                     'ReciboController@putRecibo');
 Route::delete('recibo/{id}',                  'ReciboController@deleteRecibo');

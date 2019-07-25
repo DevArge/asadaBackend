@@ -10,8 +10,8 @@ use DB;
 class AsadaController extends Controller{
 
     public function __construct(){
-        $this->middleware('jwt.auth');
-        $this->middleware('admin');
+        $this->middleware('jwt.auth', ['except' => ['getAsada']]);
+        $this->middleware('admin',  ['only' => ['putAsada']]);
     }
 
     public function getAsada(){

@@ -19,6 +19,7 @@ class CreateAsadasTable extends Migration
             $table->string('cedulaJuridica');
             $table->string('direccion');
             $table->string('telefono');
+            $table->string('correo');
             $table->timestamps();
         });
     }

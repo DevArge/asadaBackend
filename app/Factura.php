@@ -4,8 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\AfterSheet;
 
-class Factura extends Model{
+class Factura extends Model implements FromCollection, WithHeadings, ShouldAutoSize, WithEvents{
 
 //// FACTURAS DE CUENTAS POR COBRAR (no son los recibos de los medidores) /////
 
@@ -14,6 +19,31 @@ class Factura extends Model{
 
     public function productos(){
         return $this->hasMany(DetalleFactura::class);
+    }
+
+    public function collection(){
+      $sql = Factura::consultaReporte()
+                  ->where('idCuenta', $_SESSION["id"])
+                  ->whereBetween('facturas.fecha', [$_SESSION["fechaInicio"], $_SESSION["fechaFin"]])
+                  ->get();
+      unset($_SESSION["periodo"]);
+      session_destroy();
+      return $sql;
+    }
+
+    public function headings(): array{
+         return [
+           'Cuenta','Código',  'Número de factura',
+           'Descripcion', 'Fecha','Total'
+         ];
+    }
+    public function registerEvents(): array{
+        return [
+            AfterSheet::class    => function(AfterSheet $event) {
+                $cellRange = 'A1:F1'; // All headers
+                $event->sheet->getDelegate()->getStyle($cellRange)->getFont()->setSize(14);
+            },
+        ];
     }
 
     public static function obtenerFacturas($desde, $cantidad, $columna, $orden){
@@ -51,9 +81,18 @@ class Factura extends Model{
     public static function consultaSQL(){
         return DB::table('facturas')
             ->join('cuentas', 'cuentas.id','=', 'facturas.idCuenta')
-            ->select('cuentas.nombre as cuenta','cuentas.codigo', 'cuentas.id as idCuenta', 'facturas.id',
-                    'facturas.descripcion', 'facturas.fecha', 'facturas.numero',
-                    'facturas.grand_total', 'facturas.created_at');
+            ->select('cuentas.nombre as cuenta','cuentas.codigo', 'facturas.numero', 'cuentas.id as idCuenta', 'facturas.id',
+                    'facturas.descripcion', 'facturas.created_at', 'facturas.fecha',
+                    'facturas.grand_total');
+
+    }
+
+    public static function consultaReporte(){
+        return DB::table('facturas')
+            ->join('cuentas', 'cuentas.id','=', 'facturas.idCuenta')
+            ->select('cuentas.nombre as cuenta','cuentas.codigo', 'facturas.numero',
+                    'facturas.descripcion', 'facturas.fecha',
+                    'facturas.grand_total');
 
     }
 

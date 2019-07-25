@@ -28,15 +28,16 @@ class Recibo extends Model implements FromCollection, WithHeadings, ShouldAutoSi
     public function collection(){
       $sql = Recibo::consultaSQL()->where('recibos.periodo', $_SESSION["periodo"])->get();
       unset($_SESSION["periodo"]);
+      session_destroy();
       return $sql;
     }
 
     public function headings(): array{
          return [
            'Abonado', 'Cédula', 'Nombre', 'Apellido1', 'Apellido2',
-                   'Dirección', 'Medidor', 'Detalle del medidor', 'Tipo', 'Personalizado', 'Lectura',
-                   'Metros', 'Nota', 'Valor del Metro', 'Numero de recibo', 'Periodo', 'Fecha de vencimiento', 'Cargo Fijo',
-                   'Estado', 'Costo de Reparación', 'Abono de Medidor', 'Reactivacion del Medidor', 'Retraso de Pago', 'Hidrante', 'Generado','Total'
+           'Dirección', 'Medidor', 'Detalle del medidor', 'Tipo', 'Personalizado', 'Lectura',
+           'Metros', 'Nota', 'Valor del Metro', 'Numero de recibo', 'Periodo', 'Fecha de vencimiento', 'Cargo Fijo',
+           'Estado', 'Costo de Reparación', 'Abono de Medidor', 'Reactivacion del Medidor', 'Retraso de Pago', 'Hidrante', 'Generado','Total'
          ];
     }
     public function registerEvents(): array{
@@ -169,7 +170,12 @@ class Recibo extends Model implements FromCollection, WithHeadings, ShouldAutoSi
     }
 
     public static function obtenerRecibosUnAbonado($desde, $cantidad, $columna, $orden, $id){
-        $query = Recibo::consultaSQL()->where('recibos.idAbonado', $id);
+        $query = Recibo::consultaSQL()->where('recibos.idAbonado', $id)->orderBy('recibos.periodo', 'ASC');
+        return Recibo::paginar($desde, $cantidad, $columna, $orden, $query)->get();
+    }
+
+    public static function obtenerRecibosUnAbonadoPendiente($desde, $cantidad, $columna, $orden, $id){
+        $query = Recibo::consultaSQL()->where('recibos.idAbonado', $id)->where('recibos.estado', 'PENDIENTE')->orderBy('recibos.periodo', 'ASC');
         return Recibo::paginar($desde, $cantidad, $columna, $orden, $query)->get();
     }
 
@@ -214,6 +220,7 @@ class Recibo extends Model implements FromCollection, WithHeadings, ShouldAutoSi
             DB::table('recibos')
                 ->where('periodo', $periodo)
                 ->where('estado', 'PENDIENTE')
+                ->where('retrasoPago', '=', 0)
                 ->update(['retrasoPago' => $impuesto, 'total' => DB::raw("round(total + {$impuesto})")]);
           }
         }

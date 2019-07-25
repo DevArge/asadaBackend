@@ -8,7 +8,7 @@ use DB;
 class Asada extends Model{
 
     protected $table = 'asadas';
-    protected $fillable = ['nombre', 'cedulaJuridica',  'telefono', 'direccion'];
+    protected $fillable = ['nombre', 'cedulaJuridica',  'telefono', 'direccion', 'correo'];
 
     public static function obtenerAsada(){
         return DB::table('asadas')
@@ -20,6 +20,7 @@ class Asada extends Model{
       $detalle = 'Nombre: ' . $old->nombre . "\r\n" .
             'Cédula Jurídica: ' . $old->cedulaJuridica . "\r\n" .
             'Teléfono: ' . $old->telefono . "\r\n" .
+            'Correo: ' . $old->correo . "\r\n" .
             'Dirección: ' . $old->direccion . "\r\n";
       if ($eliminado) {
         return $detalle;
@@ -29,6 +30,7 @@ class Asada extends Model{
         'Nombre: ' . $new->nombre . "\r\n" .
         'Cédula Jurídica: ' . $new->cedulaJuridica . "\r\n" .
         'Teléfono: ' . $new->telefono . "\r\n" .
+        'Correo: ' . $new->correo . "\r\n" .
         'Dirección: ' . $new->direccion . "\r\n";
       }
     }
