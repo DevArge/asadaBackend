@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             'cedulaJuridica'  => '1-2345678',
             'direccion'       => 'direccion de ASADA',
             'telefono'        => '12345678',
+            'correo'          => 'sifcamail@gmail.com',
         ]);
 
         DB::table('users')->insert([
@@ -26,7 +27,7 @@ class DatabaseSeeder extends Seeder
             'password'        => bcrypt('qwerty'),
         ]);
 
-        
+
         DB::table('tipo_de_medidores')->insert([
             'nombre'          => 'Habitacional',
             'precio'          => 3000
@@ -38,7 +39,7 @@ class DatabaseSeeder extends Seeder
             'onceAtreinta'         => 215,
             'treintaYunoAsecenta'  => 230,
             'masDeSecenta'         => 245,
-            'impuestoReactivacion' => 1000
+            'impuestoReactivacion' => 0
           ]);
 
 

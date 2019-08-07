@@ -259,6 +259,17 @@ class Recibo extends Model implements FromCollection, WithHeadings, ShouldAutoSi
 
     }
 
+    public static function calcularCuentasRecaudadas($periodo){
+        return DB::table('recibos')
+                ->select(DB::raw('sum(abonoMedidor) as abonoMedidor, sum(reparacion) as reparacion,
+                sum(reactivacionMedidor) as reactivacionMedidor, sum(retrasoPago) as retrasoPago, sum(cargoFijo) as cargoFijo,
+                sum(hidrante) as hidrante, sum(metrosConsumidos * valorMetro) as consumo, sum(total) as total'))
+                ->where('periodo', $periodo)
+                ->where('estado', 'PAGADO')
+                ->get();
+
+    }
+
     public static function reciboPosterior($idMedidor, $periodo){
       return DB::table('lecturas')
           ->select('lectura', 'periodo')

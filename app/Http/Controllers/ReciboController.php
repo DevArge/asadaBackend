@@ -65,8 +65,9 @@ class ReciboController extends Controller{
         }
         $total = DB::table('recibos')->where('periodo', $r->periodo)->count();
         $cuentas = Recibo::calcularCuentas($r->periodo);
+        $cuentasRecaudadas = Recibo::calcularCuentasRecaudadas($r->periodo);
         $recibos = Recibo::obtenerRecibos($r->desde, $r->cantidad, $r->columna, $r->orden, $r->periodo);
-        return response()->json(['ok'=> true, 'recibos' => $recibos, 'total' => $total, 'cuentas' => $cuentas], 200);
+        return response()->json(['ok'=> true, 'recibos' => $recibos, 'total' => $total, 'cuentas' => $cuentas, 'cuentasRecaudadas' => $cuentasRecaudadas], 200);
     }
 
     public function buscarRecibos(Request $r,$tipo, $termino = ''){
