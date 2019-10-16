@@ -16,7 +16,7 @@ class TipoDeMedidor extends Model{
     public static function obtenerCargoFijo($idMedidor){
         return DB::table('medidores')
                 ->join('tipo_de_medidores', 'tipo_de_medidores.id', '=', 'medidores.idTipoDeMedidor')
-                ->where('tipo_de_medidores.id', '>=', 1)
+                ->where('medidores.id', '=', $idMedidor)
                 ->first();
     }
 

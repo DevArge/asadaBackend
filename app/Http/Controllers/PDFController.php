@@ -35,9 +35,10 @@ class PDFController extends Controller{
             ->get();
         $view = View::make('recibos.index', compact('recibo', 'asada', 'deudas', 'configuracion', 'lecturasAnteriores', 'recibosPendientes'))->render();
         $pdf = App::make('dompdf.wrapper');
-        $pdf->loadHTML($view)->setPaper('a4', 'landscape');
-        return $pdf->download('Recibo-' . $recibo->periodo .'.pdf');
-        // return $pdf->stream();
+        // $pdf->loadHTML($view)->setPaper('a4', 'landscape');
+        $pdf->loadHTML($view);
+        // return $pdf->download('Recibo-' . $recibo->periodo .'.pdf');
+        return $pdf->stream();
     }
 
 }

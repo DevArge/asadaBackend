@@ -7,6 +7,7 @@ use App\Lectura;
 use App\Medidor;
 use App\Recibo;
 use DB;
+//use Carbon\Carbon;
 
 class LecturaController extends Controller{
 
@@ -18,6 +19,9 @@ class LecturaController extends Controller{
         $total = DB::table('lecturas')->where('periodo', $r->periodo)->count();
         $lecturas = Lectura::obtenerLecturas($r->desde, $r->cantidad, $r->columna, $r->orden, $r->periodo);
         return response()->json(['ok'=> true, 'lecturas' => $lecturas, 'total' => $total], 200);
+		//$a = Lectura::lecturaPosterior(93, '2019-10');
+		//$a = Carbon::createFromFormat('Y-m-d', '2019-10' .'-01');
+		//return response()->json(['ok' => true, 'lectura' =>  $a], 201);
     }
 
     public function getInsertarLecturas(Request $r){

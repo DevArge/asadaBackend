@@ -10,8 +10,8 @@ use DB;
 class ConfReciboController extends Controller{
 
     public function __construct(){
-        $this->middleware('jwt.auth');
-        $this->middleware('secretaria');
+        $this->middleware('jwt.auth', ['except' => ['getConfRecibos']]);
+        $this->middleware('secretaria', ['except' => ['getConfRecibos']]);
     }
 
     public function getConfRecibos(){

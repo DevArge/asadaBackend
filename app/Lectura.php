@@ -160,10 +160,11 @@ class Lectura extends Model{
     }
 
     public static function lecturaPosterior($idMedidor, $periodo){
+		$fecha = Carbon::createFromFormat('Y-m-d', $periodo . '-01')->addMonth();
         return DB::table('lecturas')
             ->select('lectura', 'periodo')
             ->where('idMedidor', $idMedidor)
-            ->where('periodo', '>', $periodo)
+            ->where('periodo', '=', $fecha->year . '-' . $fecha->month)
             ->first();
     }
 

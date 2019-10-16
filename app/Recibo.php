@@ -25,6 +25,7 @@ class Recibo extends Model implements FromCollection, WithHeadings, ShouldAutoSi
                            'periodo', 'estado', 'reparacion', 'abonoMedidor', 'reactivacionMedidor',
                            'retrasoPago', 'metrosConsumidos', 'cargoFijo', 'total', 'hidrante', 'valorMetro', 'vence'];
 
+///=============== CONFIGURACION DE ARCHIVO EXCEL ============== ////
     public function collection(){
       $sql = Recibo::consultaSQL()->where('recibos.periodo', $_SESSION["periodo"])->get();
       unset($_SESSION["periodo"]);
@@ -48,6 +49,7 @@ class Recibo extends Model implements FromCollection, WithHeadings, ShouldAutoSi
             },
         ];
     }
+    ///=============== CONFIGURACION DE ARCHIVO EXCEL ============== ////
 
     public static function crearRecibo($idMedidor, $idLectura, $periodo, $metros){
         $vence = Carbon::createFromFormat('Y-m-d', $periodo . '-01')->addMonth()->addDays(14);
