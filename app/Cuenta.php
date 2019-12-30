@@ -10,7 +10,7 @@ class Cuenta extends Model{
 
     use SoftDeletes;
     protected $table = 'cuentas';
-    protected $fillable = ['idAsada','codigo', 'nombre', 'tipo', 'descripcion', 'presupuesto'];
+    protected $fillable = ['idAsada','codigo', 'nombre', 'tipo', 'description', 'presupuesto'];
     protected $dates = ['deleted_at'];
 
     public static function obtenerCuentas($desde, $cantidad, $columna, $orden){

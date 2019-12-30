@@ -43,8 +43,8 @@ class CuentasController extends Controller{
     public function postCuenta(CuentaRequest $request){
         $cuenta = new Cuenta();
         $idAsada = DB::table('asadas')
-                    ->where('id', '>=', 1)
-                    ->value('id');
+        ->where('id', '>=', 1)
+        ->value('id');
         $cuenta->fill($request->all());
         $cuenta->idAsada = $idAsada;
         $cuenta->save();
