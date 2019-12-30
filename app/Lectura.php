@@ -169,12 +169,17 @@ class Lectura extends Model{
     }
 
     public static function promedioTresMeses($periodo, $idMedidor){
-        return DB::table('lecturas')
+        $data = DB::table('lecturas')
             ->where('periodo', '<=', $periodo)
             ->where('idMedidor', $idMedidor)
-            ->orderBy('lectura', 'desc')
+            ->orderBy('periodo', 'desc')
             ->limit(3)
-            ->avg('metros');
+            ->get();
+        $suma = 0;
+        foreach ($data as $a) {
+            $suma = $suma + $a->metros;
+        }
+        return ($suma / 3);
     }
 
     public static function lecturasDeUnMedidor($idMedidor){

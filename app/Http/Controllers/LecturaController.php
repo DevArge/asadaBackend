@@ -12,16 +12,18 @@ use DB;
 class LecturaController extends Controller{
 
     public function __construct(){
-        $this->middleware('jwt.auth');
+        // $this->middleware('jwt.auth');
+    }
+
+    public function getLecturas2(Request $r){
+        $lecturas = Lectura::promedioTresMeses('2019-12', 115);
+        return response()->json(['ok'=> true, 'lecturas' => $lecturas], 200);
     }
 
     public function getLecturas(Request $r){
         $total = DB::table('lecturas')->where('periodo', $r->periodo)->count();
         $lecturas = Lectura::obtenerLecturas($r->desde, $r->cantidad, $r->columna, $r->orden, $r->periodo);
         return response()->json(['ok'=> true, 'lecturas' => $lecturas, 'total' => $total], 200);
-		//$a = Lectura::lecturaPosterior(93, '2019-10');
-		//$a = Carbon::createFromFormat('Y-m-d', '2019-10' .'-01');
-		//return response()->json(['ok' => true, 'lectura' =>  $a], 201);
     }
 
     public function getInsertarLecturas(Request $r){
