@@ -12,12 +12,7 @@ use DB;
 class LecturaController extends Controller{
 
     public function __construct(){
-        // $this->middleware('jwt.auth');
-    }
-
-    public function getLecturas2(Request $r){
-        $lecturas = Lectura::promedioTresMeses('2019-12', 115);
-        return response()->json(['ok'=> true, 'lecturas' => $lecturas], 200);
+        $this->middleware('jwt.auth');
     }
 
     public function getLecturas(Request $r){
