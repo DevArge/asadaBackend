@@ -87,6 +87,9 @@ class UserController extends Controller{
         if (!$usuario) {
             return response()->json(['ok'=> false, 'message' => 'El usuario con el ID: ' . $id . ' no existe'], 403);
         }
+        if ($usuario->id == 1) {
+            return response()->json(['ok'=> false, 'message' => 'No se puede eliminar el usuario administrador general'], 401);
+        }
         $usuario->delete();
         $detalle = User::toString($usuario, $usuario, true);
         Historial::crearHistorial('Eliminó al Usuario ' . $usuario->nombre, $detalle);

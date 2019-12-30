@@ -11,8 +11,8 @@ use DB;
 class AbonadoController extends Controller{
 
     public function __construct(){
-        $this->middleware('jwt.auth');
-        $this->middleware('secretaria');
+        // $this->middleware('jwt.auth');
+        // $this->middleware('secretaria');
     }
 
     public function getAbonados(Request $r){
